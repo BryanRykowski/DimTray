@@ -147,6 +147,8 @@ namespace DimTray
 
         public void getDTmonitors()
         {
+            Monitors.Clear();
+
             {
                 bool result = NativeMethods.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, CallBackInstance, 0x0);
                 int error = Marshal.GetLastWin32Error();
@@ -179,12 +181,12 @@ namespace DimTray
                 bool result = false;
                 int error = 0;
 
-                while ((i < 3) && (!result))
+                while ((i < 10) && (!result))
                 {
                     result = NativeMethods.GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref physicalMonitorCount);
                     error = Marshal.GetLastWin32Error();
 
-                    Thread.Sleep(50);
+                    Thread.Sleep(100);
 
                     ++i;
                 }
