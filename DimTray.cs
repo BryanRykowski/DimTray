@@ -150,9 +150,21 @@ namespace DimTray
             Monitors.Clear();
 
             {
-                bool result = NativeMethods.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, CallBackInstance, 0x0);
-                int error = Marshal.GetLastWin32Error();
+                int i = 0;
+                bool result = false;
+                int error = 0;
 
+                while((i <= 3) && (Monitors.Count == 0))
+                {
+                    result = NativeMethods.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, CallBackInstance, 0x0);
+                    error = Marshal.GetLastWin32Error();
+
+                    if (!result)
+                    {
+                        Thread.Sleep(100);
+                    }
+                }
+                    
                 if ((!result) || (error != 0))
                 {
                     throw new Exception( String.Format("Call to EnumDisplayMonitors failed with code 0x{0}", error.ToString("X")));

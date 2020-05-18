@@ -60,6 +60,8 @@ namespace DimTray
 
                 var monitors = new DTmonitors();
                 monitors.getDTmonitors();
+
+                
             }
 
             void Exit(object sender, EventArgs e)
