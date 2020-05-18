@@ -58,11 +58,8 @@ namespace DimTray
 
                 trayIcon.Visible = true;
 
-                DimTray dimtray = new DimTray();
-
-                var monitors = new List<DimTray.DTmonitor>();
-
-                monitors = dimtray.getDTmonitors();
+                var monitors = new DTmonitors();
+                monitors.getDTmonitors();
             }
 
             void Exit(object sender, EventArgs e)
