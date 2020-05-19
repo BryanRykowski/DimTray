@@ -57,11 +57,6 @@ namespace DimTray
                 trayIcon.ContextMenuStrip = menu;
 
                 trayIcon.Visible = true;
-
-                var monitors = new DTmonitors();
-                monitors.getDTmonitors();
-
-                
             }
 
             void Exit(object sender, EventArgs e)

@@ -12,9 +12,12 @@ namespace DimTray
 {
     public partial class SettingsForm : Form
     {
+        DTmonitors monitors = new DTmonitors();
+
         public SettingsForm()
         {
-            //InitializeComponent();
+            InitializeComponent();
+            refreshForm();
         }
 
         private void CloseForm(object sender, FormClosingEventArgs e)
@@ -24,6 +27,11 @@ namespace DimTray
                 e.Cancel = true;
                 this.Hide();
             }
+        }
+
+        private void refreshForm()
+        {
+            monitors.getDTmonitors();
         }
     }
 }
