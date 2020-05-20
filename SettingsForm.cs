@@ -61,7 +61,6 @@ namespace DimTray
 
             TabControl1 = new TabControl();
             TabControl1.Controls.AddRange( new Control[]{MonitorsTab, ProfilesTab, OptionsTab });
-            //TabControl1.MinimumSize = new Size(640, 360);
             TabControl1.Dock = DockStyle.Fill;
 
             this.Controls.Add(TabControl1);
@@ -70,7 +69,6 @@ namespace DimTray
             int titleHeight = dimensions.Top - this.Top;
 
             SuspendLayout();
-            //Size = new Size(TabControl1.Width + 16, titleHeight + TabControl1.Height + 8);
             Size = new Size(600, 320);
             ResumeLayout();
 
@@ -94,6 +92,14 @@ namespace DimTray
         void slider_mouseup(object sender, System.EventArgs e, int index, short brightness)
         {
             monitors.Monitors[index].SetBrightness(brightness);
+        }
+
+        void slider_keypress(object sender, KeyPressEventArgs e, int index, short brightness)
+        {
+            if ((e.KeyChar == (char)Keys.Enter) || (e.KeyChar == (char)Keys.Return))
+            {
+                monitors.Monitors[index].SetBrightness(brightness);
+            }
         }
 
         void refresh_button(object sender, MouseEventArgs e)
@@ -149,6 +155,7 @@ namespace DimTray
                 slider.AutoSize = true;
                 slider.Scroll += delegate (object sender, EventArgs e) { slider_scroll(sender, e, (short)slider.Value, ref slider); };
                 slider.MouseUp += delegate (object sender, MouseEventArgs e) { slider_mouseup(sender, e, slider.mIndex, (short)slider.Value); };
+                slider.KeyPress += delegate (object sender, KeyPressEventArgs e) { slider_keypress(sender, e, slider.mIndex, (short)slider.Value); };
 
                 controlPanel.Controls.Add(slider);
 
