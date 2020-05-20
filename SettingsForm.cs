@@ -3,13 +3,20 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DimTray;
 
 namespace DimTray
 {
+    public class CustomTrackBar : TrackBar
+    {
+        public int mIndex;
+    }
+
     public partial class SettingsForm : Form
     {
         TableLayoutPanel monitorControls;
@@ -24,6 +31,8 @@ namespace DimTray
         public SettingsForm()
         {
             InitializeComponent();
+
+            this.Text = "Settings";
 
             monitorControls = new TableLayoutPanel();
             monitorControls.ColumnCount = 1;
@@ -60,13 +69,16 @@ namespace DimTray
             }
         }
 
+        void slider_scroll(object sender, System.EventArgs e, int index, short brightness)
+        {
+            monitors.Monitors[index].SetBrightness(brightness);
+        }
+
         private void refreshForm()
         {
             monitors.getDTmonitors();
 
-            int i = 0;
-
-            foreach (var monitor in monitors.Monitors)
+            for (int i = 0; i < monitors.Monitors.Count;)
             {
                 TableLayoutPanel monitorLabels = new TableLayoutPanel();
                 monitorLabels.RowCount = 1;
@@ -80,19 +92,36 @@ namespace DimTray
                 MonitorNumber.AutoSize = true;
 
                 Label MonitorName = new Label();
-                MonitorName.Text = monitor.Name;
+                MonitorName.Text = monitors.Monitors[i].Name;
                 MonitorName.AutoSize = true;
 
                 Label MonitorRes = new Label();
-                MonitorRes.Text = monitor.Resolution;
+                MonitorRes.Text = monitors.Monitors[i].Resolution;
                 MonitorRes.AutoSize = true;
 
                 monitorLabels.Controls.Add(MonitorNumber, 0, 1);
                 monitorLabels.Controls.Add(MonitorName, 1, 1);
                 monitorLabels.Controls.Add(MonitorRes, 2, 1);
 
-                monitorControls.Controls.Add(monitorLabels);
+                CustomTrackBar slider = new CustomTrackBar();
+                slider.mIndex = i;
+                slider.Minimum = monitors.Monitors[i].MinimumBrightness;
+                slider.Maximum = monitors.Monitors[i].MaximumBrightness;
+                slider.Value = monitors.Monitors[i].CurrentBrightness;
+                slider.TickFrequency = 1;
+                slider.Width = 500;
+                slider.Anchor = AnchorStyles.Left;
+                slider.AutoSize = true;
+                slider.Scroll += delegate (object sender, EventArgs e) { slider_scroll(sender, e, slider.mIndex, (short)slider.Value); };
 
+                TableLayoutPanel controlPanel = new TableLayoutPanel();
+                controlPanel.ColumnCount = 1;
+                controlPanel.AutoSize = true;
+
+                controlPanel.Controls.Add(monitorLabels);
+                controlPanel.Controls.Add(slider);
+
+                monitorControls.Controls.Add(controlPanel);
                 ++i;
             }
         }
