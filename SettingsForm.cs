@@ -15,6 +15,7 @@ namespace DimTray
     public class CustomTrackBar : TrackBar
     {
         public int mIndex;
+        public short savedVal;
     }
 
     public partial class SettingsForm : Form
@@ -34,19 +35,34 @@ namespace DimTray
 
             this.Text = "Settings";
 
+
             monitorControls = new TableLayoutPanel();
             monitorControls.ColumnCount = 1;
             monitorControls.AutoSize = true;
 
             MonitorsTab = new TabPage("Monitors");
-            MonitorsTab.Controls.Add(monitorControls);
+
+            FlowLayoutPanel container = new FlowLayoutPanel();
+            container.FlowDirection = FlowDirection.TopDown;
+            container.AutoSize = true;
+            
+            MonitorsTab.Controls.Add(container);
+            
+            Button refreshButton = new Button();
+            refreshButton.Text = "Refresh Monitors";
+            refreshButton.MouseClick += new MouseEventHandler(refresh_button);
+
+            container.Controls.Add(refreshButton);
+            container.Controls.Add(monitorControls);
+            
 
             ProfilesTab = new TabPage("Profiles");
             OptionsTab = new TabPage("Options");
 
             TabControl1 = new TabControl();
             TabControl1.Controls.AddRange( new Control[]{MonitorsTab, ProfilesTab, OptionsTab });
-            TabControl1.MinimumSize = new Size(640, 360);
+            //TabControl1.MinimumSize = new Size(640, 360);
+            TabControl1.Dock = DockStyle.Fill;
 
             this.Controls.Add(TabControl1);
 
@@ -54,7 +70,8 @@ namespace DimTray
             int titleHeight = dimensions.Top - this.Top;
 
             SuspendLayout();
-            Size = new Size(TabControl1.Width + 16, titleHeight + TabControl1.Height + 8);
+            //Size = new Size(TabControl1.Width + 16, titleHeight + TabControl1.Height + 8);
+            Size = new Size(600, 320);
             ResumeLayout();
 
             refreshForm();
@@ -69,17 +86,33 @@ namespace DimTray
             }
         }
 
-        void slider_scroll(object sender, System.EventArgs e, int index, short brightness)
+        void slider_scroll(object sender, System.EventArgs e, short brightness, ref CustomTrackBar slider)
+        {
+            slider.savedVal = brightness;
+        }
+
+        void slider_mouseup(object sender, System.EventArgs e, int index, short brightness)
         {
             monitors.Monitors[index].SetBrightness(brightness);
         }
 
+        void refresh_button(object sender, MouseEventArgs e)
+        {
+            refreshForm();
+        }
+
         private void refreshForm()
         {
+            monitorControls.Controls.Clear();
+
             monitors.getDTmonitors();
 
-            for (int i = 0; i < monitors.Monitors.Count;)
+            for (int i = 0; i < monitors.Monitors.Count; i++)
             {
+                TableLayoutPanel controlPanel = new TableLayoutPanel();
+                controlPanel.ColumnCount = 1;
+                controlPanel.AutoSize = true;
+
                 TableLayoutPanel monitorLabels = new TableLayoutPanel();
                 monitorLabels.RowCount = 1;
                 monitorLabels.GrowStyle = TableLayoutPanelGrowStyle.AddColumns;
@@ -103,26 +136,23 @@ namespace DimTray
                 monitorLabels.Controls.Add(MonitorName, 1, 1);
                 monitorLabels.Controls.Add(MonitorRes, 2, 1);
 
+                controlPanel.Controls.Add(monitorLabels);
+
                 CustomTrackBar slider = new CustomTrackBar();
                 slider.mIndex = i;
                 slider.Minimum = monitors.Monitors[i].MinimumBrightness;
                 slider.Maximum = monitors.Monitors[i].MaximumBrightness;
                 slider.Value = monitors.Monitors[i].CurrentBrightness;
                 slider.TickFrequency = 1;
-                slider.Width = 500;
+                slider.Width = (int)(this.Width * 0.8);
                 slider.Anchor = AnchorStyles.Left;
                 slider.AutoSize = true;
-                slider.Scroll += delegate (object sender, EventArgs e) { slider_scroll(sender, e, slider.mIndex, (short)slider.Value); };
+                slider.Scroll += delegate (object sender, EventArgs e) { slider_scroll(sender, e, (short)slider.Value, ref slider); };
+                slider.MouseUp += delegate (object sender, MouseEventArgs e) { slider_mouseup(sender, e, slider.mIndex, (short)slider.Value); };
 
-                TableLayoutPanel controlPanel = new TableLayoutPanel();
-                controlPanel.ColumnCount = 1;
-                controlPanel.AutoSize = true;
-
-                controlPanel.Controls.Add(monitorLabels);
                 controlPanel.Controls.Add(slider);
 
                 monitorControls.Controls.Add(controlPanel);
-                ++i;
             }
         }
     }
