@@ -12,6 +12,8 @@ namespace DimTray
 {
     public partial class SettingsForm : Form
     {
+        TableLayoutPanel monitorControls;
+
         TabPage MonitorsTab;
         TabPage ProfilesTab;
         TabPage OptionsTab;
@@ -23,7 +25,13 @@ namespace DimTray
         {
             InitializeComponent();
 
+            monitorControls = new TableLayoutPanel();
+            monitorControls.ColumnCount = 1;
+            monitorControls.AutoSize = true;
+
             MonitorsTab = new TabPage("Monitors");
+            MonitorsTab.Controls.Add(monitorControls);
+
             ProfilesTab = new TabPage("Profiles");
             OptionsTab = new TabPage("Options");
 
@@ -55,6 +63,38 @@ namespace DimTray
         private void refreshForm()
         {
             monitors.getDTmonitors();
+
+            int i = 0;
+
+            foreach (var monitor in monitors.Monitors)
+            {
+                TableLayoutPanel monitorLabels = new TableLayoutPanel();
+                monitorLabels.RowCount = 1;
+                monitorLabels.GrowStyle = TableLayoutPanelGrowStyle.AddColumns;
+                monitorLabels.AutoSize = true;
+
+                Label MonitorNumber = new Label();
+                MonitorNumber.Text = string.Format("Monitor {0}: ", i);
+                MonitorNumber.Padding = new Padding(0);
+                MonitorNumber.Margin = new Padding(0);
+                MonitorNumber.AutoSize = true;
+
+                Label MonitorName = new Label();
+                MonitorName.Text = monitor.Name;
+                MonitorName.AutoSize = true;
+
+                Label MonitorRes = new Label();
+                MonitorRes.Text = monitor.Resolution;
+                MonitorRes.AutoSize = true;
+
+                monitorLabels.Controls.Add(MonitorNumber, 0, 1);
+                monitorLabels.Controls.Add(MonitorName, 1, 1);
+                monitorLabels.Controls.Add(MonitorRes, 2, 1);
+
+                monitorControls.Controls.Add(monitorLabels);
+
+                ++i;
+            }
         }
     }
 }
