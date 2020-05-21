@@ -33,8 +33,9 @@ namespace DimTray
         {
             InitializeComponent();
 
-            this.Text = "Settings";
-
+            Text = "DimTray Settings";
+            MaximizeBox = false;
+            MinimizeBox = false;
 
             monitorControls = new TableLayoutPanel();
             monitorControls.ColumnCount = 1;
@@ -63,13 +64,13 @@ namespace DimTray
             TabControl1.Controls.AddRange( new Control[]{MonitorsTab, ProfilesTab, OptionsTab });
             TabControl1.Dock = DockStyle.Fill;
 
-            this.Controls.Add(TabControl1);
+            Controls.Add(TabControl1);
 
             Rectangle dimensions = this.RectangleToScreen(this.ClientRectangle);
             int titleHeight = dimensions.Top - this.Top;
 
             SuspendLayout();
-            Size = new Size(600, 320);
+            Size = new Size(600, 510);
             ResumeLayout();
 
             refreshForm();
@@ -109,6 +110,11 @@ namespace DimTray
 
         private void refreshForm()
         {
+            foreach(Control control in monitorControls.Controls)
+            {
+                control.Dispose();
+            }
+            
             monitorControls.Controls.Clear();
 
             monitors.getDTmonitors();

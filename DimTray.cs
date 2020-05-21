@@ -11,7 +11,7 @@ using System.Net.Http.Headers;
 
 namespace DimTray
 {
-    public class DTmonitor
+    public class DTmonitor : IDisposable
     {
         private IntPtr _Handle;
 
@@ -42,6 +42,14 @@ namespace DimTray
             this._MaximumBrightness = MaximumBrightness;
             this._Name = Name;
             this._Resolution = Resolution;
+        }
+
+        public void Dispose()
+        {
+        }
+
+        public void Dispose(bool disposing)
+        {
         }
 
         public IntPtr Handle { get => _Handle; }
@@ -147,6 +155,11 @@ namespace DimTray
 
         public void getDTmonitors()
         {
+            foreach(DTmonitor item in Monitors)
+            {
+                item.Dispose();
+            }
+
             Monitors.Clear();
 
             {
