@@ -167,7 +167,7 @@ namespace DimTray
                 bool result = false;
                 int error = 0;
 
-                while((i <= 3) && (Monitors.Count == 0))
+                while((i <= 10) && (Monitors.Count == 0))
                 {
                     result = NativeMethods.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, CallBackInstance, 0x0);
                     error = Marshal.GetLastWin32Error();
@@ -178,7 +178,7 @@ namespace DimTray
                     }
                 }
                     
-                if ((!result) || (error != 0))
+                if (!result)
                 {
                     throw new Exception( String.Format("Call to EnumDisplayMonitors failed with code 0x{0}", error.ToString("X")));
                 }
@@ -216,7 +216,7 @@ namespace DimTray
                     ++i;
                 }
 
-                if ((!result) || (error != 0))
+                if (!result)
                 {
                     throw new Exception( String.Format("Call to GetNumberOfPhysicalMonitorsFromHMONITOR failed with code 0x{0}", error.ToString("X")));
                 }
@@ -229,7 +229,7 @@ namespace DimTray
                 bool result = false;
                 int error = 0;
 
-                while ((i < 3) && (!result))
+                while ((i < 10) && (!result))
                 {
                     result = NativeMethods.GetPhysicalMonitorsFromHMONITOR(hMonitor, physicalMonitorCount, physicalMonitors);
                     error = Marshal.GetLastWin32Error();
@@ -239,7 +239,7 @@ namespace DimTray
                     ++i;
                 }
 
-                if ((!result) || (error != 0))
+                if (!result)
                 {
                     throw new Exception( String.Format("Call to GetPhysicalMonitorsFromHMONITOR failed with code 0x{0}", error.ToString("X")));
                 }
