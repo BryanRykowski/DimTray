@@ -85,9 +85,10 @@ namespace DimTray
             }
         }
 
-        void slider_scroll(object sender, System.EventArgs e, short brightness, ref CustomTrackBar slider)
+        void slider_scroll(object sender, System.EventArgs e, short brightness, ref CustomTrackBar slider, ref TextBox sliderVal)
         {
             slider.savedVal = brightness;
+            sliderVal.Text = brightness.ToString();
         }
 
         void slider_mouseup(object sender, System.EventArgs e, int index, short brightness)
@@ -150,6 +151,14 @@ namespace DimTray
 
                 controlPanel.Controls.Add(monitorLabels);
 
+                FlowLayoutPanel sliderPanel = new FlowLayoutPanel();
+                sliderPanel.AutoSize = true;
+
+                TextBox sliderVal = new TextBox();
+                sliderVal.Text = monitors.Monitors[i].CurrentBrightness.ToString();
+                sliderVal.ReadOnly = true;
+                sliderVal.Width = 48;
+
                 CustomTrackBar slider = new CustomTrackBar();
                 slider.mIndex = i;
                 slider.Minimum = monitors.Monitors[i].MinimumBrightness;
@@ -159,11 +168,15 @@ namespace DimTray
                 slider.Width = (int)(this.Width * 0.8);
                 slider.Anchor = AnchorStyles.Left;
                 slider.AutoSize = true;
-                slider.Scroll += delegate (object sender, EventArgs e) { slider_scroll(sender, e, (short)slider.Value, ref slider); };
+                slider.Scroll += delegate (object sender, EventArgs e) { slider_scroll(sender, e, (short)slider.Value, ref slider, ref sliderVal); };
                 slider.MouseUp += delegate (object sender, MouseEventArgs e) { slider_mouseup(sender, e, slider.mIndex, (short)slider.Value); };
                 slider.KeyPress += delegate (object sender, KeyPressEventArgs e) { slider_keypress(sender, e, slider.mIndex, (short)slider.Value); };
 
-                controlPanel.Controls.Add(slider);
+
+                sliderPanel.Controls.Add(slider);
+                sliderPanel.Controls.Add(sliderVal);
+
+                controlPanel.Controls.Add(sliderPanel);
 
                 monitorControls.Controls.Add(controlPanel);
             }
