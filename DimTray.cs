@@ -13,19 +13,6 @@ namespace DimTray
 {
     class DTmonitor : IDisposable
     {
-        /*
-        private IntPtr _Handle;
-
-        private bool _BrightnessSupported;
-
-        private short _MinimumBrightness;
-        private short _CurrentBrightness;
-        private short _MaximumBrightness;
-
-        private String _Name;
-
-        private String _Resolution;
-        */
         public IntPtr Handle { get; private set; }
         public bool BrightnessSupported { get; private set; }
         public short MinimumBrightness { get; private set; }
