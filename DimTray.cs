@@ -51,7 +51,7 @@ namespace DimTray
 
         public int GetBrightness()
         {
-            short min = 0, cur = 0, max = 0;
+            short min = -1, cur = -1, max = -1;
 
             int i = 0;
             bool result = false;
@@ -76,9 +76,6 @@ namespace DimTray
             else
             {
                 this.BrightnessSupported = false;
-                this.MinimumBrightness = -1;
-                this.CurrentBrightness = -1;
-                this.MaximumBrightness = -1;
             }
 
             return error;
@@ -122,7 +119,7 @@ namespace DimTray
                 error = 0x57;
             }
 
-            System.Threading.Thread.Sleep(150);
+            System.Threading.Thread.Sleep(100);
 
             GetBrightness();
 
