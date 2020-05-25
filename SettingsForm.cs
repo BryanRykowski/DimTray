@@ -37,20 +37,27 @@ namespace DimTray
             MaximizeBox = false;
             MinimizeBox = false;
 
-            monitorControls = new TableLayoutPanel();
-            monitorControls.ColumnCount = 1;
-            monitorControls.AutoSize = true;
+            monitorControls = new TableLayoutPanel 
+            {
+            ColumnCount = 1,
+            AutoSize = true
+            };
 
             MonitorsTab = new TabPage("Monitors");
 
-            FlowLayoutPanel container = new FlowLayoutPanel();
-            container.FlowDirection = FlowDirection.TopDown;
-            container.AutoSize = true;
+            FlowLayoutPanel container = new FlowLayoutPanel 
+            {
+            FlowDirection = FlowDirection.TopDown,
+            AutoSize = true
+            };
             
             MonitorsTab.Controls.Add(container);
             
-            Button refreshButton = new Button();
-            refreshButton.Text = "Refresh Monitors";
+            Button refreshButton = new Button 
+            { 
+            Text = "Refresh Monitors"
+            };
+            
             refreshButton.MouseClick += new MouseEventHandler(refresh_button);
 
             container.Controls.Add(refreshButton);
@@ -60,14 +67,14 @@ namespace DimTray
             ProfilesTab = new TabPage("Profiles");
             OptionsTab = new TabPage("Options");
 
-            TabControl1 = new TabControl();
-            TabControl1.Controls.AddRange( new Control[]{MonitorsTab, ProfilesTab, OptionsTab });
-            TabControl1.Dock = DockStyle.Fill;
+            TabControl1 = new TabControl 
+            {
+            Dock = DockStyle.Fill
+            };
+
+            TabControl1.Controls.AddRange(new Control[] { MonitorsTab, ProfilesTab, OptionsTab });
 
             Controls.Add(TabControl1);
-
-            Rectangle dimensions = this.RectangleToScreen(this.ClientRectangle);
-            int titleHeight = dimensions.Top - this.Top;
 
             SuspendLayout();
             Size = new Size(600, 510);
@@ -122,28 +129,38 @@ namespace DimTray
 
             for (int i = 0; i < monitors.Monitors.Count; i++)
             {
-                TableLayoutPanel controlPanel = new TableLayoutPanel();
-                controlPanel.ColumnCount = 1;
-                controlPanel.AutoSize = true;
+                TableLayoutPanel controlPanel = new TableLayoutPanel 
+                {
+                    ColumnCount = 1,
+                    AutoSize = true
+                };
 
-                TableLayoutPanel monitorLabels = new TableLayoutPanel();
-                monitorLabels.RowCount = 1;
-                monitorLabels.GrowStyle = TableLayoutPanelGrowStyle.AddColumns;
-                monitorLabels.AutoSize = true;
+                TableLayoutPanel monitorLabels = new TableLayoutPanel 
+                {
+                    RowCount = 1,
+                    GrowStyle = TableLayoutPanelGrowStyle.AddColumns,
+                    AutoSize = true
+                };
 
-                Label MonitorNumber = new Label();
-                MonitorNumber.Text = string.Format("Monitor {0}: ", i);
-                MonitorNumber.Padding = new Padding(0);
-                MonitorNumber.Margin = new Padding(0);
-                MonitorNumber.AutoSize = true;
+                Label MonitorNumber = new Label 
+                {
+                    Text = string.Format("Monitor {0}: ", i),
+                    Padding = new Padding(0),
+                    Margin = new Padding(0),
+                    AutoSize = true
+                };
 
-                Label MonitorName = new Label();
-                MonitorName.Text = monitors.Monitors[i].Name;
-                MonitorName.AutoSize = true;
+                Label MonitorName = new Label
+                {
+                    Text = monitors.Monitors[i].Name,
+                    AutoSize = true
+                };
 
-                Label MonitorRes = new Label();
-                MonitorRes.Text = monitors.Monitors[i].Resolution;
-                MonitorRes.AutoSize = true;
+                Label MonitorRes = new Label 
+                {
+                    Text = monitors.Monitors[i].Resolution,
+                    AutoSize = true
+                };
 
                 monitorLabels.Controls.Add(MonitorNumber, 0, 1);
                 monitorLabels.Controls.Add(MonitorName, 1, 1);
@@ -151,23 +168,30 @@ namespace DimTray
 
                 controlPanel.Controls.Add(monitorLabels);
 
-                FlowLayoutPanel sliderPanel = new FlowLayoutPanel();
-                sliderPanel.AutoSize = true;
+                FlowLayoutPanel sliderPanel = new FlowLayoutPanel 
+                {
+                    AutoSize = true
+                };
 
-                TextBox sliderVal = new TextBox();
-                sliderVal.Text = monitors.Monitors[i].CurrentBrightness.ToString();
-                sliderVal.ReadOnly = true;
-                sliderVal.Width = 48;
+                TextBox sliderVal = new TextBox 
+                {
+                    Text = monitors.Monitors[i].CurrentBrightness.ToString(),
+                    ReadOnly = true,
+                    Width = 48
+                };
 
-                CustomTrackBar slider = new CustomTrackBar();
-                slider.mIndex = i;
-                slider.Minimum = monitors.Monitors[i].MinimumBrightness;
-                slider.Maximum = monitors.Monitors[i].MaximumBrightness;
-                slider.Value = monitors.Monitors[i].CurrentBrightness;
-                slider.TickFrequency = 1;
-                slider.Width = (int)(this.Width * 0.8);
-                slider.Anchor = AnchorStyles.Left;
-                slider.AutoSize = true;
+                CustomTrackBar slider = new CustomTrackBar 
+                {
+                    mIndex = i,
+                    Minimum = monitors.Monitors[i].MinimumBrightness,
+                    Maximum = monitors.Monitors[i].MaximumBrightness,
+                    Value = monitors.Monitors[i].CurrentBrightness,
+                    TickFrequency = 1,
+                    Width = (int)(this.Width * 0.8),
+                    Anchor = AnchorStyles.Left,
+                    AutoSize = true
+                };
+
                 slider.Scroll += delegate (object sender, EventArgs e) { slider_scroll(sender, e, (short)slider.Value, ref slider, ref sliderVal); };
                 slider.MouseUp += delegate (object sender, MouseEventArgs e) { slider_mouseup(sender, e, slider.mIndex, (short)slider.Value); };
                 slider.KeyPress += delegate (object sender, KeyPressEventArgs e) { slider_keypress(sender, e, slider.mIndex, (short)slider.Value); };
