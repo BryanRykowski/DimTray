@@ -39,23 +39,23 @@ namespace DimTray
 
             monitorControls = new TableLayoutPanel 
             {
-            ColumnCount = 1,
-            AutoSize = true
+                ColumnCount = 1,
+                AutoSize = true
             };
 
             MonitorsTab = new TabPage("Monitors");
 
             FlowLayoutPanel container = new FlowLayoutPanel 
             {
-            FlowDirection = FlowDirection.TopDown,
-            AutoSize = true
+                FlowDirection = FlowDirection.TopDown,
+                AutoSize = true
             };
             
             MonitorsTab.Controls.Add(container);
             
             Button refreshButton = new Button 
             { 
-            Text = "Refresh Monitors"
+                Text = "Refresh Monitors"
             };
             
             refreshButton.MouseClick += new MouseEventHandler(refresh_button);
@@ -69,7 +69,7 @@ namespace DimTray
 
             TabControl1 = new TabControl 
             {
-            Dock = DockStyle.Fill
+                Dock = DockStyle.Fill
             };
 
             TabControl1.Controls.AddRange(new Control[] { MonitorsTab, ProfilesTab, OptionsTab });
