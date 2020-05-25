@@ -11,8 +11,9 @@ using System.Net.Http.Headers;
 
 namespace DimTray
 {
-    public class DTmonitor : IDisposable
+    class DTmonitor : IDisposable
     {
+        /*
         private IntPtr _Handle;
 
         private bool _BrightnessSupported;
@@ -24,6 +25,14 @@ namespace DimTray
         private String _Name;
 
         private String _Resolution;
+        */
+        public IntPtr Handle { get; private set; }
+        public bool BrightnessSupported { get; private set; }
+        public short MinimumBrightness { get; private set; }
+        public short CurrentBrightness { get; private set; }
+        public short MaximumBrightness { get; private set; }
+        public String Name { get; private set; }
+        public String Resolution { get; private set; }
 
         public DTmonitor(
             IntPtr Handle,
@@ -35,13 +44,13 @@ namespace DimTray
             String Resolution
         )
         {
-            this._Handle = Handle;
-            this._BrightnessSupported = BrightnessSupported;
-            this._MinimumBrightness = MinimumBrightness;
-            this._CurrentBrightness = CurrentBrightness;
-            this._MaximumBrightness = MaximumBrightness;
-            this._Name = Name;
-            this._Resolution = Resolution;
+            this.Handle = Handle;
+            this.BrightnessSupported = BrightnessSupported;
+            this.MinimumBrightness = MinimumBrightness;
+            this.CurrentBrightness = CurrentBrightness;
+            this.MaximumBrightness = MaximumBrightness;
+            this.Name = Name;
+            this.Resolution = Resolution;
         }
 
         public void Dispose()
@@ -52,13 +61,6 @@ namespace DimTray
         {
         }
 
-        public IntPtr Handle { get => _Handle; }
-        public bool BrightnessSupported { get => _BrightnessSupported; }
-        public short MinimumBrightness { get => _MinimumBrightness; }
-        public short CurrentBrightness { get => _CurrentBrightness; }
-        public short MaximumBrightness { get => _MaximumBrightness; }
-        public String Name { get => _Name; }
-        public String Resolution { get => _Resolution; }
 
         public int GetBrightness()
         {
@@ -70,7 +72,7 @@ namespace DimTray
 
             while ((i < 3) && (!result))
             {
-                result = NativeMethods.GetMonitorBrightness(this._Handle, ref min, ref cur, ref max);
+                result = NativeMethods.GetMonitorBrightness(this.Handle, ref min, ref cur, ref max);
                 error = Marshal.GetLastWin32Error();
 
                 System.Threading.Thread.Sleep(50);
@@ -80,16 +82,16 @@ namespace DimTray
 
             if (result)
             {
-                this._MinimumBrightness = min;
-                this._CurrentBrightness = cur;
-                this._MaximumBrightness = max;
+                this.MinimumBrightness = min;
+                this.CurrentBrightness = cur;
+                this.MaximumBrightness = max;
             }
             else
             {
-                this._BrightnessSupported = false;
-                this._MinimumBrightness = -1;
-                this._CurrentBrightness = -1;
-                this._MaximumBrightness = -1;
+                this.BrightnessSupported = false;
+                this.MinimumBrightness = -1;
+                this.CurrentBrightness = -1;
+                this.MaximumBrightness = -1;
             }
 
             return error;
@@ -101,14 +103,14 @@ namespace DimTray
 
             int error = 0;
 
-            if ((_MinimumBrightness <= bright) && (bright <= _MaximumBrightness))
+            if ((MinimumBrightness <= bright) && (bright <= MaximumBrightness))
             {
                 int i = 0;
                 bool result = false;
 
                 while ((i < 10) && (!result) && (this.CurrentBrightness != val))
                 {
-                    result = NativeMethods.SetMonitorBrightness(this._Handle, bright);
+                    result = NativeMethods.SetMonitorBrightness(this.Handle, bright);
                     error = Marshal.GetLastWin32Error();
 
                     Thread.Sleep(50);
@@ -122,10 +124,10 @@ namespace DimTray
 
                 if (!result)
                 {
-                    this._BrightnessSupported = false;
-                    this._MinimumBrightness = -1;
-                    this._CurrentBrightness = -1;
-                    this._MaximumBrightness = -1;
+                    this.BrightnessSupported = false;
+                    this.MinimumBrightness = -1;
+                    this.CurrentBrightness = -1;
+                    this.MaximumBrightness = -1;
                 }
             }
             else
