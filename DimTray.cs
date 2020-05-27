@@ -13,6 +13,7 @@ namespace DimTray
 {
     class DTmonitor : IDisposable
     {
+        public bool Fake { get; private set; }
         public IntPtr Handle { get; private set; }
         public bool BrightnessSupported { get; private set; }
         public short MinimumBrightness { get; private set; }
@@ -31,6 +32,7 @@ namespace DimTray
             String Resolution
         )
         {
+            Fake = false;
             this.Handle = Handle;
             this.BrightnessSupported = BrightnessSupported;
             this.MinimumBrightness = MinimumBrightness;
@@ -38,6 +40,19 @@ namespace DimTray
             this.MaximumBrightness = MaximumBrightness;
             this.Name = Name;
             this.Resolution = Resolution;
+        }
+
+        // For making a fake monitor (for UI testing).
+        public DTmonitor()
+        {
+            Fake = true;
+            Handle = IntPtr.Zero;
+            BrightnessSupported = false;
+            MinimumBrightness = 0;
+            CurrentBrightness = 50;
+            MaximumBrightness = 100;
+            Name = "fake";
+            Resolution = "0 x 0";
         }
 
         public void Dispose()
@@ -57,26 +72,30 @@ namespace DimTray
             bool result = false;
             int error = 0;
 
-            while ((i < 3) && (!result))
+            if (!Fake)
             {
-                result = NativeMethods.GetMonitorBrightness(this.Handle, ref min, ref cur, ref max);
-                error = Marshal.GetLastWin32Error();
+                while ((i < 3) && (!result))
+                {
+                    result = NativeMethods.GetMonitorBrightness(this.Handle, ref min, ref cur, ref max);
+                    error = Marshal.GetLastWin32Error();
 
-                System.Threading.Thread.Sleep(50);
+                    System.Threading.Thread.Sleep(50);
 
-                ++i;
+                    ++i;
+                }
+
+                if (result)
+                {
+                    this.MinimumBrightness = min;
+                    this.CurrentBrightness = cur;
+                    this.MaximumBrightness = max;
+                }
+                else
+                {
+                    this.BrightnessSupported = false;
+                }
             }
 
-            if (result)
-            {
-                this.MinimumBrightness = min;
-                this.CurrentBrightness = cur;
-                this.MaximumBrightness = max;
-            }
-            else
-            {
-                this.BrightnessSupported = false;
-            }
 
             return error;
         }
@@ -87,7 +106,7 @@ namespace DimTray
 
             int error = 0;
 
-            if ((MinimumBrightness <= bright) && (bright <= MaximumBrightness))
+            if ((!Fake) && (BrightnessSupported) && (MinimumBrightness <= bright) && (bright <= MaximumBrightness))
             {
                 int i = 0;
                 bool result = false;
@@ -167,6 +186,28 @@ namespace DimTray
                 if (!result)
                 {
                     throw new Exception( String.Format("Call to EnumDisplayMonitors failed with code 0x{0}", error.ToString("X")));
+                }
+            }
+        }
+
+        // Populate the Monitors list with fake monitors (for UI testing).
+        // Takes the number of fake monitors to create as an argument (limited to 16).
+        public void getFakeDTmonitors(int count)
+        {
+            foreach (DTmonitor item in Monitors)
+            {
+                item.Dispose();
+            }
+
+            Monitors.Clear();
+
+            if ((count > 0) && (count < 17))
+            {
+                int i = 1;
+                while (i <= count)
+                {
+                    Monitors.Add(new DTmonitor());
+                    ++i;
                 }
             }
         }

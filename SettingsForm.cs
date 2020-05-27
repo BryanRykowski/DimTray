@@ -45,10 +45,13 @@ namespace DimTray
 
             MonitorsTab = new TabPage("Monitors");
 
-            FlowLayoutPanel container = new FlowLayoutPanel 
+            FlowLayoutPanel container = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.TopDown,
-                AutoSize = true
+                WrapContents = false,
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+                AutoScroll = true
             };
             
             MonitorsTab.Controls.Add(container);
