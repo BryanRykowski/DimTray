@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -30,12 +31,13 @@ namespace DimTrayFramework
                 {
                     try
                     {
-                        bw.Write(Values.Count);
+                        bw.Write((byte)Values.Count);
                 
                         foreach (short val in Values)
                         {
                             bw.Write(val);
                         }
+
                         return true;
                     }
                     catch(Exception e)

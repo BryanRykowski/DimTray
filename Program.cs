@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Diagnostics;
-using System.Drawing;
-using System.Runtime.Versioning;
-using System.ComponentModel.Design;
-using System.Threading;
+using System.IO;
+
 
 namespace DimTray
 {
@@ -35,7 +29,7 @@ namespace DimTray
 
             public DimTrayApplicationContext()
             {
-                settingsForm.Hide();
+                settingsForm.ShowDialog();
 
                 trayIcon = new NotifyIcon
                 {

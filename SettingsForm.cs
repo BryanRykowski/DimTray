@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DimTray;
+using DimTrayFramework;
 
 namespace DimTray
 {
@@ -28,9 +29,14 @@ namespace DimTray
         TabControl TabControl1;
 
         DTmonitors monitors = new DTmonitors();
+        public string ProfilePath;
+        ProfileList profiles;
 
         public SettingsForm()
         {
+            ProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DimTray\\Profiles\\";
+            profiles = new ProfileList(ProfilePath);
+
             InitializeComponent();
 
             Text = "DimTray Settings";
@@ -55,15 +61,37 @@ namespace DimTray
             };
             
             MonitorsTab.Controls.Add(container);
+
+            FlowLayoutPanel buttonStrip = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                Dock = DockStyle.Left,
+                AutoSize = true
+            };
             
-            Button refreshButton = new Button 
-            { 
-                Text = "Refresh Monitors"
+            Button refreshButton = new Button
+            {
+                Text = "Refresh Monitors",
+                AutoSize = true
             };
             
             refreshButton.MouseClick += new MouseEventHandler(refresh_button);
+            
+            buttonStrip.Controls.Add(refreshButton);
 
-            container.Controls.Add(refreshButton);
+            Button saveNewProfileButton = new Button
+            {
+                Text = "Save to New Profile",
+                AutoSize = true
+            };
+
+            saveNewProfileButton.MouseClick += new MouseEventHandler(save_new_profile_button);
+
+            buttonStrip.Controls.Add(saveNewProfileButton);
+
+            container.Controls.Add(buttonStrip);
+
             container.Controls.Add(monitorControls);
             
 
@@ -195,9 +223,20 @@ namespace DimTray
                     AutoSize = true
                 };
 
-                slider.Scroll += delegate (object sender, EventArgs e) { slider_scroll(sender, e, (short)slider.Value, ref slider, ref sliderVal); };
-                slider.MouseUp += delegate (object sender, MouseEventArgs e) { slider_mouseup(sender, e, slider.mIndex, (short)slider.Value); };
-                slider.KeyPress += delegate (object sender, KeyPressEventArgs e) { slider_keypress(sender, e, slider.mIndex, (short)slider.Value); };
+                slider.Scroll += delegate (object sender, EventArgs e)
+                {
+                    slider_scroll(sender, e, (short)slider.Value, ref slider, ref sliderVal);
+                };
+                
+                slider.MouseUp += delegate (object sender, MouseEventArgs e)
+                {
+                    slider_mouseup(sender, e, slider.mIndex, (short)slider.Value); 
+                };
+                
+                slider.KeyPress += delegate (object sender, KeyPressEventArgs e) 
+                {
+                    slider_keypress(sender, e, slider.mIndex, (short)slider.Value); 
+                };
 
 
                 sliderPanel.Controls.Add(slider);
@@ -206,6 +245,21 @@ namespace DimTray
                 controlPanel.Controls.Add(sliderPanel);
 
                 monitorControls.Controls.Add(controlPanel);
+            }
+        }
+
+        private void save_new_profile_button(object sender, MouseEventArgs e)
+        {
+            List<short> brightness_vals = new List<short>();
+
+            foreach (var monitor in monitors.Monitors)
+            {
+                brightness_vals.Add(monitor.CurrentBrightness);
+            }
+
+            using (SaveProfileForm saveProfileForm = new SaveProfileForm(ProfilePath, brightness_vals))
+            {
+                saveProfileForm.ShowDialog();
             }
         }
     }

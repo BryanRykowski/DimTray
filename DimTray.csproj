@@ -75,6 +75,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SaveProfileForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SaveProfileForm.Designer.cs">
+      <DependentUpon>SaveProfileForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingsForm.cs">
       <SubType>Component</SubType>
     </Compile>
