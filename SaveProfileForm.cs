@@ -1,5 +1,6 @@
 ﻿using DimTray;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -99,11 +100,42 @@ namespace DimTrayFramework
 
         private void save_button(object sender, MouseEventArgs e, string text, List<short> vals)
         {
-            if (text.Length > 0)
+            bool result = true;
+
+            if (File.Exists(Path + text + ".DTprofile"))
             {
-                Profile profile = new Profile(Path + text + ".DTprofile", vals);
-                profile.Serialize();
-                this.Close();
+                if (MessageBox.Show("Warning! Profile: \"" + text + "\" already exists, do you want to overwrite it?", "Dimtray : Profile Already Exists", MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    result = false;
+                }
+            }
+
+            if (text.Length < 1)
+            {
+                result = false;
+                MessageBox.Show("Error: Can not use empty file name.", "DimTray : Error");
+            }
+            
+            if (!ValidateFileName.Validate(text))
+            {
+                result = false;
+                MessageBox.Show("Error: \"" + text + "\" contains forbidden characters, or is a reserved filename.", "DimTray : Error");
+            }
+            
+            if (result == true)
+            {
+                try
+                {
+                    using (Profile profile = new Profile(Path + text + ".DTprofile", vals))
+                    {
+                        profile.Serialize();
+                    }
+                    this.Close();
+                }
+                catch(Exception Exc)
+                {
+                    MessageBox.Show("Error: Failed to save profile\nReason: " + Exc.Message, "Dimtray : Error");
+                }
             }
         }
 

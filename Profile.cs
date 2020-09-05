@@ -8,7 +8,7 @@ using System.Windows.Forms;
 namespace DimTrayFramework
 {
 
-    public class Profile
+    public class Profile : IDisposable
     {
         public string FilePath { get; private set;}
         public List<short> Values { get; set;}
@@ -25,28 +25,44 @@ namespace DimTrayFramework
             Values = values;
         }
 
+        public void Dispose()
+        {
+
+        }
+
         public bool Serialize()
         {
-                using (BinaryWriter bw = new BinaryWriter(File.Open(FilePath, FileMode.Create)))
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
+            }
+            catch(Exception e)
+            {
+                return false;
+                throw (e);
+            }
+
+            using (BinaryWriter bw = new BinaryWriter(File.Open(FilePath, FileMode.Create)))
+            {
+                try
                 {
-                    try
-                    {
-                        bw.Write((byte)Values.Count);
+                        
+                    bw.Write((byte)Values.Count);
                 
-                        foreach (short val in Values)
-                        {
-                            bw.Write(val);
-                        }
-
-                        return true;
-                    }
-                    catch(Exception e)
+                    foreach (short val in Values)
                     {
-                        MessageBox.Show("Failed to create profile at \"" + FilePath + "\" with exception:\n" + e.Message);
-
-                        return false;
+                        bw.Write(val);
                     }
+
+                    return true;
                 }
+                catch(Exception e)
+                {
+                    return false;
+                    throw(e);
+                }
+            }
+            
         }
 
         public bool DeSerialize()
@@ -71,9 +87,8 @@ namespace DimTrayFramework
                 }
                 catch(Exception e)
                 {
-                    MessageBox.Show("Failed to retrieve profile at \"" + FilePath + "\" with exception:\n" + e.Message);
-
                     return false;
+                    throw (e);
                 }
             }
             else 

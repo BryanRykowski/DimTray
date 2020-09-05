@@ -259,6 +259,7 @@ namespace DimTray
 
             using (SaveProfileForm saveProfileForm = new SaveProfileForm(ProfilePath, brightness_vals))
             {
+                saveProfileForm.StartPosition = FormStartPosition.CenterParent;
                 saveProfileForm.ShowDialog();
             }
         }
