@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace DimTray
 {
-    class DTmonitor : IDisposable
+    class DTmonitor
     {
         public bool Fake { get; private set; }
         public IntPtr Handle { get; private set; }
@@ -154,11 +154,6 @@ namespace DimTray
 
         public void getDTmonitors()
         {
-            foreach(DTmonitor item in Monitors)
-            {
-                item.Dispose();
-            }
-
             Monitors.Clear();
 
             {
@@ -188,11 +183,6 @@ namespace DimTray
         // Takes the number of fake monitors to create as an argument (limited to 16).
         public void getFakeDTmonitors(int count)
         {
-            foreach (DTmonitor item in Monitors)
-            {
-                item.Dispose();
-            }
-
             Monitors.Clear();
 
             if ((count > 0) && (count < 17))

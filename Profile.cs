@@ -8,7 +8,7 @@ using System.Windows.Forms;
 namespace DimTrayFramework
 {
 
-    public class Profile : IDisposable
+    public class Profile
     {
         public string FilePath { get; private set;}
         public List<short> Values { get; set;}
@@ -23,11 +23,6 @@ namespace DimTrayFramework
         {
             FilePath = path;
             Values = values;
-        }
-
-        public void Dispose()
-        {
-
         }
 
         public bool Serialize()

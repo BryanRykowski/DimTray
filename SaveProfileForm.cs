@@ -126,10 +126,9 @@ namespace DimTrayFramework
             {
                 try
                 {
-                    using (Profile profile = new Profile(Path + text + ".DTprofile", vals))
-                    {
-                        profile.Serialize();
-                    }
+                    Profile profile = new Profile(Path + text + ".DTprofile", vals);
+                    profile.Serialize();
+                    
                     this.Close();
                 }
                 catch(Exception Exc)

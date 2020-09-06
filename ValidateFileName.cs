@@ -12,11 +12,12 @@ namespace DimTrayFramework
         {
             string fileAllUpper = fileName.ToUpper();
 
+            // Check if the file uses a name reserved by Windows.
             if (
                 (fileAllUpper == "CON") || 
                 (fileAllUpper == "PRN") ||
                 (fileAllUpper == "AUX") ||
-                (fileAllUpper== "NUL") ||
+                (fileAllUpper == "NUL") ||
                 (fileAllUpper == "COM0") ||
                 (fileAllUpper == "COM1") ||
                 (fileAllUpper == "COM2") ||
@@ -42,6 +43,7 @@ namespace DimTrayFramework
                 return false;
             }
 
+            // Check if the name contains any characters forbidden in Windows paths.
             if(
                 (fileName.Contains("?")) ||
                 (fileName.Contains("\\")) ||
@@ -57,6 +59,7 @@ namespace DimTrayFramework
                 return false;
             }
 
+            // Check if there are any control characters in the name.
             foreach (Char c in fileName.ToCharArray())
             {
                 if ((UInt16)c < 32)
