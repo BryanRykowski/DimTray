@@ -39,7 +39,7 @@ namespace DimTray
 
                 trayIcon = new NotifyIcon
                 {
-                    Icon = DimTrayFramework.Properties.Resources.dimtray_icon, //TODO: Make a real icon.
+                    Icon = DimTray.Properties.Resources.dimtray_icon, //TODO: Make a real icon.
                     
                     Text = "DimTray"
                 };
