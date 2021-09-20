@@ -23,8 +23,6 @@ namespace DimTray
         TableLayoutPanel monitorControls;
 
         TabPage MonitorsTab;
-        TabPage ProfilesTab;
-        TabPage OptionsTab;
         TabControl TabControl1;
 
         DTmonitors monitors = new DTmonitors();
@@ -66,16 +64,12 @@ namespace DimTray
             container.Controls.Add(refreshButton);
             container.Controls.Add(monitorControls);
             
-
-            ProfilesTab = new TabPage("Profiles");
-            OptionsTab = new TabPage("Options");
-
             TabControl1 = new TabControl 
             {
                 Dock = DockStyle.Fill
             };
 
-            TabControl1.Controls.AddRange(new Control[] { MonitorsTab, ProfilesTab, OptionsTab });
+            TabControl1.Controls.AddRange(new Control[] { MonitorsTab});
 
             Controls.Add(TabControl1);
 
