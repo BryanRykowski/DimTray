@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{CF6ACABB-8557-43F6-BA1A-B810A024C0F7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>DimTrayFramework</RootNamespace>
-    <AssemblyName>DimTrayFramework</AssemblyName>
+    <RootNamespace>DimTray</RootNamespace>
+    <AssemblyName>DimTray</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -74,8 +74,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Settings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings1.settings</DependentUpon>
+    </Compile>
     <Compile Include="SettingsForm.cs">
-      <SubType>Form</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
@@ -107,6 +112,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Google-Noto-Emoji-Objects-62971-gear.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dimtray_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
