@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DimTray.Properties {
+namespace DimTrayFramework.Properties {
     using System;
     
     
@@ -57,6 +57,16 @@ namespace DimTray.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon dimtray_icon {
+            get {
+                object obj = ResourceManager.GetObject("dimtray_icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
