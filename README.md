@@ -14,4 +14,4 @@ The right click tray icon menu
 - [ ] Assign hotkeys to profiles
 ## Copyright
 DimTray - Copyright (C) 2021 Bryan Rykowski\
-Provided under the the terms of the GNU General Public License version 3
+Provided under the terms of the GNU General Public License version 3
