@@ -13,5 +13,5 @@ The right click tray icon menu
 - [ ] Save brightness settings to profiles
 - [ ] Assign hotkeys to profiles
 ## Copyright
-DimTray - Copyright (C) 2021 Bryan Rykowski\
+DimTray - Copyright © 2021 Bryan Rykowski\
 Provided under the terms of the GNU General Public License version 3
