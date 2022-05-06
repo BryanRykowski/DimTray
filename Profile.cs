@@ -20,7 +20,7 @@ namespace DimTray
         public ProfileData data;
     }
 
-    class Profiles
+    class ProfileManager
     {
         public List<Profile> profiles = new List<Profile>();
 
