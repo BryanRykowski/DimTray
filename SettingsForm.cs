@@ -42,6 +42,8 @@ namespace DimTray
 
         DTmonitors monitors = new DTmonitors();
 
+        Profiles profiles = new Profiles();
+
         public SettingsForm()
         {
             InitializeComponent();
@@ -77,6 +79,16 @@ namespace DimTray
             refreshButton.MouseClick += new MouseEventHandler(refresh_button);
 
             container.Controls.Add(refreshButton);
+
+            Button saveButton = new Button
+            {
+                Text = "Save As Profile..."
+            };
+
+            saveButton.MouseClick += new MouseEventHandler(save_button);
+
+            container.Controls.Add(saveButton);
+
             container.Controls.Add(monitorControls);
             
             TabControl1 = new TabControl 
@@ -125,6 +137,13 @@ namespace DimTray
 
         void refresh_button(object sender, MouseEventArgs e)
         {
+            refreshForm();
+        }
+
+        void save_button(object sender, MouseEventArgs e)
+        {
+            //TODO: open window to get name
+            profiles.SaveNewProfile(monitors, "name");
             refreshForm();
         }
 
