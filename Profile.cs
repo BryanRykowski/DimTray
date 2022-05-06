@@ -26,9 +26,9 @@ namespace DimTray
 
         public void GetProfiles()
         {
-            string profilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dimtray\\Profiles";
+            profiles.Clear();
 
-            var profiles = new List<Profile>();
+            string profilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dimtray\\Profiles";
 
             if (Directory.Exists(profilePath))
             {
