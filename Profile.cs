@@ -22,7 +22,7 @@ namespace DimTray
 
     class Profiles
     {
-        public List<Profile> profiles;
+        public List<Profile> profiles = new List<Profile>();
 
         public void GetProfiles()
         {
