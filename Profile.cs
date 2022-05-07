@@ -56,7 +56,7 @@ namespace DimTray
             }
         }
 
-        public bool SaveNewProfile(DTmonitors monitors, String name)
+        public bool SaveNewProfile(MonitorManager monitors, String name)
         {
             string appDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dimtray";
             string profileDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dimtray\\Profiles";

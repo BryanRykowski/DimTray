@@ -162,12 +162,12 @@ namespace DimTray
 
     }
     
-    class DTmonitors
+    class MonitorManager
     {
         public List<DTmonitor> Monitors;
         private EnumMonitorsDelegate CallBackInstance;
 
-        public DTmonitors()
+        public MonitorManager()
         {
             Monitors = new List<DTmonitor>();
             CallBackInstance = new EnumMonitorsDelegate(EnumDisplayMonitorsCallback);

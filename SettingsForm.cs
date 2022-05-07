@@ -42,7 +42,7 @@ namespace DimTray
     {
         TableLayoutPanel monitorControls;
         TableLayoutPanel profileTable;
-        DTmonitors monitors = new DTmonitors();
+        MonitorManager monitorManager = new MonitorManager();
         ProfileManager profileManager = new ProfileManager();
 
         public SettingsForm()
@@ -157,14 +157,14 @@ namespace DimTray
 
         private void slider_mouseup(object sender, System.EventArgs e, int index, short brightness)
         {
-            monitors.Monitors[index].SetBrightness(brightness);
+            monitorManager.Monitors[index].SetBrightness(brightness);
         }
 
         private void slider_keypress(object sender, KeyPressEventArgs e, int index, short brightness)
         {
             if ((e.KeyChar == (char)Keys.Enter) || (e.KeyChar == (char)Keys.Return))
             {
-                monitors.Monitors[index].SetBrightness(brightness);
+                monitorManager.Monitors[index].SetBrightness(brightness);
             }
         }
 
@@ -176,23 +176,23 @@ namespace DimTray
         private void save_button(object sender, MouseEventArgs e)
         {
             //TODO: open window to get name
-            profileManager.SaveNewProfile(monitors, "name");
+            profileManager.SaveNewProfile(monitorManager, "name");
             refreshProfiles();
         }
 
         private void apply_button(object sender, MouseEventArgs e, int profileIndex)
         {
-            if (monitors.Monitors.Count == profileManager.profiles[profileIndex].data.brightnessVals.Count)
+            if (monitorManager.Monitors.Count == profileManager.profiles[profileIndex].data.brightnessVals.Count)
             {
-                for (int i = 0; i < monitors.Monitors.Count; i++)
+                for (int i = 0; i < monitorManager.Monitors.Count; i++)
                 {
-                    bool support = monitors.Monitors[i].BrightnessSupported;
-                    bool inRange = (profileManager.profiles[profileIndex].data.brightnessVals[i] <= monitors.Monitors[i].MaximumBrightness) && 
-                                   (profileManager.profiles[profileIndex].data.brightnessVals[i] >= monitors.Monitors[i].MinimumBrightness);
+                    bool support = monitorManager.Monitors[i].BrightnessSupported;
+                    bool inRange = (profileManager.profiles[profileIndex].data.brightnessVals[i] <= monitorManager.Monitors[i].MaximumBrightness) && 
+                                   (profileManager.profiles[profileIndex].data.brightnessVals[i] >= monitorManager.Monitors[i].MinimumBrightness);
                     
                     if (support && inRange)
                     {
-                        monitors.Monitors[i].SetBrightness(profileManager.profiles[profileIndex].data.brightnessVals[i]);
+                        monitorManager.Monitors[i].SetBrightness(profileManager.profiles[profileIndex].data.brightnessVals[i]);
                     }
                     else if (!inRange)
                     {
@@ -291,9 +291,9 @@ namespace DimTray
             
             monitorControls.Controls.Clear();
 
-            monitors.getDTmonitors();
+            monitorManager.getDTmonitors();
 
-            for (int i = 0; i < monitors.Monitors.Count; i++)
+            for (int i = 0; i < monitorManager.Monitors.Count; i++)
             {
                 TableLayoutPanel controlPanel = new TableLayoutPanel 
                 {
@@ -318,13 +318,13 @@ namespace DimTray
 
                 Label MonitorName = new Label
                 {
-                    Text = monitors.Monitors[i].Name,
+                    Text = monitorManager.Monitors[i].Name,
                     AutoSize = true
                 };
 
                 Label MonitorRes = new Label 
                 {
-                    Text = monitors.Monitors[i].Resolution,
+                    Text = monitorManager.Monitors[i].Resolution,
                     AutoSize = true
                 };
 
@@ -343,7 +343,7 @@ namespace DimTray
 
                 TextBox sliderVal = new TextBox 
                 {
-                    Text = monitors.Monitors[i].CurrentBrightness.ToString(),
+                    Text = monitorManager.Monitors[i].CurrentBrightness.ToString(),
                     ReadOnly = true,
                     Width = 48
                 };
@@ -351,9 +351,9 @@ namespace DimTray
                 CustomTrackBar slider = new CustomTrackBar 
                 {
                     mIndex = i,
-                    Minimum = monitors.Monitors[i].MinimumBrightness,
-                    Maximum = monitors.Monitors[i].MaximumBrightness,
-                    Value = monitors.Monitors[i].CurrentBrightness,
+                    Minimum = monitorManager.Monitors[i].MinimumBrightness,
+                    Maximum = monitorManager.Monitors[i].MaximumBrightness,
+                    Value = monitorManager.Monitors[i].CurrentBrightness,
                     TickFrequency = 1,
                     Width = 320,
                     Anchor = AnchorStyles.Left,
