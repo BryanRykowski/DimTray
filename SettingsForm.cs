@@ -204,7 +204,7 @@ namespace DimTray
                     else if (!inRange)
                     {
                         string mNumber = String.Format("{0}", i);
-                        MessageBox.Show("Brightness value in profile for monitor " + mNumber + " out of allowed range.");
+                        MessageBox.Show("Brightness value in profile for monitor " + mNumber + " out of allowed range!", "DimTray - Error");
                     }
                 }
 
@@ -212,7 +212,7 @@ namespace DimTray
             }
             else
             {
-                MessageBox.Show("Mismatch between number of monitors in profile and number currently connected.");
+                MessageBox.Show("Mismatch between number of monitors in profile (" + profileManager.profiles[profileIndex].data.brightnessVals.Count + ") and number currently connected (" + monitorManager.Monitors.Count + ")!", "DimTray - Error");
             }
         }
 

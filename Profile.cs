@@ -70,7 +70,7 @@ namespace DimTray
                 }
                 catch
                 {
-                    MessageBox.Show("Unable to create AppData\\Local\\DimTray directory!");
+                    MessageBox.Show("Unable to create AppData\\Local\\DimTray directory!", "DimTray - Error");
                     return false;
                 }
             }
@@ -83,7 +83,7 @@ namespace DimTray
                 }
                 catch
                 {
-                    MessageBox.Show("Unable to create AppData\\Local\\DimTray\\Profiles directory!");
+                    MessageBox.Show("Unable to create AppData\\Local\\DimTray\\Profiles directory!", "DimTray - Error");
                     return false;
                 }
             }
@@ -93,7 +93,7 @@ namespace DimTray
             if (File.Exists(filePath))
             {
                 var buttons = MessageBoxButtons.YesNo;
-                var result = MessageBox.Show("Profile: " + name + " already exists. Replace this profile?", "", buttons);
+                var result = MessageBox.Show("Profile: " + name + " already exists. Replace this profile?", "DimTray - Error", buttons);
 
                 if (result == DialogResult.No)
                 {
@@ -120,7 +120,7 @@ namespace DimTray
                 }
                 catch
                 {
-                    MessageBox.Show("Failed to save profile!");
+                    MessageBox.Show("Failed to save profile!", "DimTray - Error");
                     return false;
                 }
             }
