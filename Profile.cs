@@ -56,7 +56,7 @@ namespace DimTray
             }
         }
 
-        public bool SaveNewProfile(MonitorManager monitors, String name)
+        public bool SaveNewProfile(List<short> vals, String name)
         {
             string appDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dimtray";
             string profileDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dimtray\\Profiles";
@@ -107,9 +107,9 @@ namespace DimTray
 
                 data.version = 0;
 
-                foreach (DTmonitor monitor in monitors.Monitors)
+                foreach (var val in vals)
                 {
-                    data.brightnessVals.Add(monitor.CurrentBrightness);
+                    data.brightnessVals.Add(val);
                 }
 
                 var jsonStr = JsonSerializer.Serialize(data);

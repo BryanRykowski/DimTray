@@ -176,7 +176,14 @@ namespace DimTray
         private void save_button(object sender, MouseEventArgs e)
         {
             //TODO: open window to get name
-            profileManager.SaveNewProfile(monitorManager, "name");
+            var vals = new List<short>();
+
+            foreach (var monitor in monitorManager.Monitors)
+            {
+                vals.Add(monitor.CurrentBrightness);
+            }
+
+            profileManager.SaveNewProfile(vals, "name");
             refreshProfiles();
         }
 
