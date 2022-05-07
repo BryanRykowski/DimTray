@@ -45,8 +45,13 @@ namespace DimTray
         MonitorManager monitorManager = new MonitorManager();
         ProfileManager profileManager = new ProfileManager();
 
+        ProfileNameForm profileNameForm;
+
         public SettingsForm()
         {
+            profileNameForm = new ProfileNameForm(SaveFunc);
+            profileNameForm.Hide();
+
             InitializeComponent();
 
             Text = "DimTray Settings";
@@ -175,7 +180,11 @@ namespace DimTray
 
         private void save_button(object sender, MouseEventArgs e)
         {
-            //TODO: open window to get name
+            profileNameForm.ClearAndDisplay();
+        }
+
+        private void SaveFunc(object sender, MouseEventArgs e, string profileName)
+        {
             var vals = new List<short>();
 
             foreach (var monitor in monitorManager.Monitors)
@@ -183,7 +192,7 @@ namespace DimTray
                 vals.Add(monitor.CurrentBrightness);
             }
 
-            profileManager.SaveNewProfile(vals, "name");
+            profileManager.SaveNewProfile(vals, profileName);
             refreshProfiles();
         }
 
