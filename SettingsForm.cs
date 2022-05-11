@@ -24,6 +24,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DimTray;
+using System.IO;
 
 namespace DimTray
 {
@@ -40,7 +41,9 @@ namespace DimTray
 
     public partial class SettingsForm : Form
     {
-        TableLayoutPanel monitorControls;
+        private readonly Size WindowSize = new Size( 758, 510);
+
+        TableLayoutPanel monitorTable;
         TableLayoutPanel profileTable;
         MonitorManager monitorManager = new MonitorManager();
         ProfileManager profileManager = new ProfileManager();
@@ -57,89 +60,117 @@ namespace DimTray
             Text = "DimTray Settings";
             MaximizeBox = false;
             MinimizeBox = false;
+            AutoScaleMode = AutoScaleMode.None;
 
             SuspendLayout();
 
-            FlowLayoutPanel rootContainer = new FlowLayoutPanel
+            Size = WindowSize;
+            int clientWidth = ClientSize.Width;
+            int clientHeight = ClientSize.Height;
+
+            TableLayoutPanel monitorPanel = new TableLayoutPanel
             {
-                FlowDirection = FlowDirection.TopDown,
-                Dock = DockStyle.Fill
+                Location = new Point(0, 0),
+                Size = new Size(clientWidth / 2, clientHeight),
+                ColumnCount = 1
             };
+            Controls.Add(monitorPanel);
             {
-                FlowLayoutPanel buttonStrip = new FlowLayoutPanel
+                FlowLayoutPanel controlPanel = new FlowLayoutPanel
                 {
                     FlowDirection = FlowDirection.LeftToRight,
-                    WrapContents = false,
-                    Anchor = (AnchorStyles.Left | AnchorStyles.Right),
-                    AutoSize = true,
+                    AutoSize = true
+                };
+                monitorPanel.Controls.Add(controlPanel);
+                {
+                    Button monitorRefreshButton = new Button
+                    {
+                        Text = "Refresh",
+                        AutoSize = true,
+                    };
+                    controlPanel.Controls.Add(monitorRefreshButton);
+                    {
+                        monitorRefreshButton.MouseClick += new MouseEventHandler(refresh_monitors_button);
+                    }
+
+                    Button profileSaveButton = new Button
+                    {
+                        Text = "Save To Profile...",
+                        AutoSize = true
+                    };
+                    controlPanel.Controls.Add(profileSaveButton);
+                    {
+                        profileSaveButton.MouseClick += new MouseEventHandler(save_button);
+                    }
+                }
+
+                Panel monitorBorder = new Panel
+                {
+                    BorderStyle = BorderStyle.Fixed3D,
+                    Dock = DockStyle.Fill,
                     AutoScroll = true
                 };
+                monitorPanel.Controls.Add(monitorBorder);
                 {
-                    Button refreshButton = new Button
+                    monitorTable = new TableLayoutPanel
                     {
-                        Text = "Refresh Monitors",
-                        AutoSize = true
-                    };
-                    {
-                        refreshButton.MouseClick += new MouseEventHandler(refresh_button);
-                    }
-                    buttonStrip.Controls.Add(refreshButton);
-
-                    Button saveButton = new Button
-                    {
-                        Text = "Save As Profile...",
-                        AutoSize = true
-                    };
-                    {
-                        saveButton.MouseClick += new MouseEventHandler(save_button);
-                    }
-                    buttonStrip.Controls.Add(saveButton);
-                }
-                rootContainer.Controls.Add(buttonStrip);
-
-                TableLayoutPanel containerSplit = new TableLayoutPanel
-                {
-                    ColumnCount = 2,
-                    RowCount = 1,
-                    AutoSize = true,
-                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                    AutoScroll = true,
-                };
-                {
-                    FlowLayoutPanel monitorContainer = new FlowLayoutPanel
-                    {
-                        FlowDirection = FlowDirection.TopDown,
-                        WrapContents = false,
+                        Dock = DockStyle.Top,
                         AutoSize = true,
-                        AutoScroll = true,
-                        BorderStyle = BorderStyle.FixedSingle
+                        Margin = new Padding(0),
+                        Padding = new Padding(3,3,3,4),
                     };
-                    {
-                        monitorControls = new TableLayoutPanel 
-                        {
-                            ColumnCount = 1,
-                            AutoSize = true
-                        };
-                        monitorContainer.Controls.Add(monitorControls);
-                    }
-                    containerSplit.Controls.Add(monitorContainer);
+                    monitorBorder.Controls.Add(monitorTable);
+                }
+            }
 
+            TableLayoutPanel profilePanel = new TableLayoutPanel
+            {
+                Location = new Point(clientWidth / 2, 0),
+                Size = new Size(clientWidth / 2, clientHeight),
+                ColumnCount = 1
+            };
+            Controls.Add(profilePanel);
+            {
+                FlowLayoutPanel controlPanel = new FlowLayoutPanel
+                {
+                    FlowDirection = FlowDirection.LeftToRight,
+                    AutoSize = true
+                };
+                profilePanel.Controls.Add(controlPanel);
+                {
+                    Button profileRefreshButton = new Button
+                    {
+                        Text = "Refresh",
+                        AutoSize = true
+                    };
+                    controlPanel.Controls.Add(profileRefreshButton);
+                    {
+                        profileRefreshButton.MouseClick += new MouseEventHandler(refresh_profiles_button);
+                    }
+                }
+
+                Panel profileBorder = new Panel
+                {
+                    BorderStyle = BorderStyle.Fixed3D,
+                    Dock = DockStyle.Fill,
+                    AutoScroll = true
+                };
+                profilePanel.Controls.Add(profileBorder);
+                {
                     profileTable = new TableLayoutPanel
                     {
-                        ColumnCount = 1,
+                        Dock = DockStyle.Top,
                         AutoSize = true,
-                        AutoScroll = true,
-                        BorderStyle = BorderStyle.FixedSingle,
+                        Margin = new Padding(0),
+                        Padding = new Padding(3, 3, 3, 3),
+                        CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset
                     };
-                    containerSplit.Controls.Add(profileTable);
+                    profileBorder.Controls.Add(profileTable);
                 }
-                rootContainer.Controls.Add(containerSplit);
+
             }
-            Controls.Add(rootContainer);
 
-            Size = new Size(850, 510);
             ResumeLayout();
-
 
             refreshMonitors();
             refreshProfiles();
@@ -173,14 +204,33 @@ namespace DimTray
             }
         }
 
-        private void refresh_button(object sender, MouseEventArgs e)
+        private void refresh_monitors_button(object sender, MouseEventArgs e)
         {
             refreshMonitors();
+        }
+
+        private void refresh_profiles_button(object sender, MouseEventArgs e)
+        {
+            refreshProfiles();
         }
 
         private void save_button(object sender, MouseEventArgs e)
         {
             profileNameForm.ClearAndDisplay();
+        }
+
+        private void Delete_Profile(object sender, MouseEventArgs e, int profileIndex)
+        {
+            try
+            {
+                File.Delete(profileManager.profiles[profileIndex].path);
+            }
+            catch
+            {
+                MessageBox.Show("Unable to delete profile \"" + profileManager.profiles[profileIndex].name + "\"", "DimTray - Error");
+            }
+
+            refreshProfiles();
         }
 
         private void SaveFunc(object sender, MouseEventArgs e, string profileName)
@@ -227,8 +277,7 @@ namespace DimTray
 
         private void refreshProfiles()
         {
-            SuspendLayout();
-            Size = new Size(850, 510);
+            profileTable.SuspendLayout();
 
             foreach (Control control in profileTable.Controls)
             {
@@ -241,155 +290,145 @@ namespace DimTray
 
             for (int i = 0; i < profileManager.profiles.Count; i++)
             {
-                FlowLayoutPanel profilePanel = new FlowLayoutPanel
+                TableLayoutPanel profilePanel = new TableLayoutPanel
                 {
-                    FlowDirection = FlowDirection.LeftToRight,
-                    WrapContents = false,
-                    AutoSize = true,
-                    BorderStyle = BorderStyle.FixedSingle,
-                    Dock = DockStyle.Fill
+                    Dock = DockStyle.Top,
+                    Margin = new Padding(0),
+                    Padding = new Padding(0, 0, 0, 3),
+                    ColumnCount = 2, RowCount = 1,
+                    AutoSize = true
                 };
+                profileTable.Controls.Add(profilePanel);
                 {
-                    FlowLayoutPanel textContainer = new FlowLayoutPanel
+                    Label ProfileName = new Label
                     {
+                        Text = string.Format("{0}", profileManager.profiles[i].name),
+                        Margin = new Padding(0),
+                        Width = 160,
+                        Anchor = AnchorStyles.None,
+                        TextAlign = ContentAlignment.MiddleLeft,
+                        AutoEllipsis = true
+                    };
+                    profilePanel.Controls.Add(ProfileName);
+
+                    FlowLayoutPanel buttonPanel = new FlowLayoutPanel
+                    {
+                        FlowDirection = FlowDirection.RightToLeft,
+                        Dock = DockStyle.Top,
                         AutoSize = true
                     };
+                    profilePanel.Controls.Add(buttonPanel);
                     {
-                        Label ProfileName = new Label
+                        CustomButton deleteButton = new CustomButton
                         {
-                            Text = string.Format("{0}", profileManager.profiles[i].name),
-                            Padding = new Padding(4),
-                            Margin = new Padding(4),
-                            AutoSize = true
+                            Text = "Delete",
+                            AutoSize = true,
+                            index = i,
                         };
-                        textContainer.Controls.Add(ProfileName);
+                        buttonPanel.Controls.Add(deleteButton);
+                        {
+                            deleteButton.MouseClick += delegate (object sender, MouseEventArgs e) { Delete_Profile(sender, e, deleteButton.index); };
+                        }
 
-                    }
-                    profilePanel.Controls.Add(textContainer);
-
-                    FlowLayoutPanel buttonContainer = new FlowLayoutPanel
-                    {
-                        AutoSize = true,
-                        Dock = DockStyle.Right,
-                        Anchor = AnchorStyles.Right,
-                        BackColor = Color.Red
-                    };
-                    {
                         CustomButton applyButton = new CustomButton
                         {
                             Text = "Apply",
                             AutoSize = true,
                             index = i
                         };
+                        buttonPanel.Controls.Add(applyButton);
                         {
                             applyButton.MouseClick += delegate (object sender, MouseEventArgs e) { apply_button(sender, e, applyButton.index); };
                         }
-                        buttonContainer.Controls.Add(applyButton);
                     }
-                    profilePanel.Controls.Add(buttonContainer);
                 }
-                profileTable.Controls.Add(profilePanel);
             }
 
-            ResumeLayout();
+            profileTable.ResumeLayout();
         }
 
         private void refreshMonitors()
         {
-            SuspendLayout();
-            Size = new Size(850, 510);
+            monitorTable.SuspendLayout();
             
-
-            foreach (Control control in monitorControls.Controls)
+            foreach (Control control in monitorTable.Controls)
             {
                 control.Dispose();
             }
-            
-            monitorControls.Controls.Clear();
+
+            monitorTable.Controls.Clear();
 
             monitorManager.getDTmonitors();
 
             for (int i = 0; i < monitorManager.Monitors.Count; i++)
             {
-                TableLayoutPanel controlPanel = new TableLayoutPanel 
+                TableLayoutPanel monitorControls = new TableLayoutPanel
                 {
-                    ColumnCount = 1,
-                    AutoSize = true
-                };
-
-                TableLayoutPanel monitorLabels = new TableLayoutPanel 
-                {
-                    RowCount = 1,
-                    GrowStyle = TableLayoutPanelGrowStyle.AddColumns,
-                    AutoSize = true
-                };
-
-                Label MonitorNumber = new Label 
-                {
-                    Text = string.Format("Monitor {0}: ", i),
+                    Parent = monitorTable,
+                    Dock = DockStyle.Top,
+                    Margin = new Padding(0, 0, 0, 3),
                     Padding = new Padding(0),
-                    Margin = new Padding(0),
-                    AutoSize = true
-                };
-
-                Label MonitorName = new Label
-                {
-                    Text = monitorManager.Monitors[i].Name,
-                    AutoSize = true
-                };
-
-                Label MonitorRes = new Label 
-                {
-                    Text = monitorManager.Monitors[i].Resolution,
-                    AutoSize = true
-                };
-
-                monitorLabels.Controls.Add(MonitorNumber, 0, 1);
-                monitorLabels.Controls.Add(MonitorName, 1, 1);
-                monitorLabels.Controls.Add(MonitorRes, 2, 1);
-
-                controlPanel.Controls.Add(monitorLabels);
-
-                FlowLayoutPanel sliderPanel = new FlowLayoutPanel 
-                {
+                    ColumnCount = 1,
+                    RowCount = 2,
                     AutoSize = true,
-                    Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                    Margin = new Padding(4, 0, 0, 0)
                 };
-
-                TextBox sliderVal = new TextBox 
+                monitorControls.Parent.Controls.Add(monitorControls);
                 {
-                    Text = monitorManager.Monitors[i].CurrentBrightness.ToString(),
-                    ReadOnly = true,
-                    Width = 48
-                };
+                    Label monitorLabel = new Label
+                    {
+                        Parent = monitorControls,
+                        Text = string.Format("Monitor {0}: {1} - {2}", i, monitorManager.Monitors[i].Resolution, monitorManager.Monitors[i].Name),
+                        Padding = new Padding(0, 0, 0, 3),
+                        Margin = new Padding(0),
+                        AutoSize = true,
+                    };
+                    monitorLabel.Parent.Controls.Add(monitorLabel);
 
-                CustomTrackBar slider = new CustomTrackBar 
-                {
-                    mIndex = i,
-                    Minimum = monitorManager.Monitors[i].MinimumBrightness,
-                    Maximum = monitorManager.Monitors[i].MaximumBrightness,
-                    Value = monitorManager.Monitors[i].CurrentBrightness,
-                    TickFrequency = 1,
-                    Width = 320,
-                    Anchor = AnchorStyles.Left,
-                    AutoSize = true
-                };
+                    Panel sliderTable = new Panel
+                    {
+                        Parent = monitorControls,
+                        Dock = DockStyle.Top,
+                        AutoSize = true,
+                        Margin = new Padding(0, 0, 0, 3),
+                        Padding = new Padding(0),
+                    };
+                    sliderTable.Parent.Controls.Add(sliderTable);
+                    {
+                        CustomTrackBar slider = new CustomTrackBar
+                        {
+                            Parent = sliderTable,
+                            Dock = DockStyle.Top,
+                            Margin = new Padding(0),
+                            Padding = new Padding(-3, 0, -3, 0),
+                            mIndex = i,
+                            Minimum = monitorManager.Monitors[i].MinimumBrightness,
+                            Maximum = monitorManager.Monitors[i].MaximumBrightness,
+                            Value = monitorManager.Monitors[i].CurrentBrightness,
+                            TickFrequency = 2,
+                        };
+                        slider.Parent.Controls.Add(slider);
+                    
+                        TextBox sliderVal = new TextBox
+                        {
+                            Parent = sliderTable,
+                            Text = monitorManager.Monitors[i].CurrentBrightness.ToString(),
+                            ReadOnly = true,
+                            Width = 32,
+                            Dock = DockStyle.Right,
+                            Margin = new Padding(0)
+                        };
+                        sliderVal.Parent.Controls.Add(sliderVal);
+                    
+                        slider.Scroll += delegate (object sender, EventArgs e) { slider_scroll(sender, e, (short)slider.Value, ref slider, ref sliderVal); };
+                        slider.MouseUp += delegate (object sender, MouseEventArgs e) { slider_mouseup(sender, e, slider.mIndex, (short)slider.Value); };
+                        slider.KeyPress += delegate (object sender, KeyPressEventArgs e) { slider_keypress(sender, e, slider.mIndex, (short)slider.Value); };
+                    }
+                }
 
-                slider.Scroll += delegate (object sender, EventArgs e) { slider_scroll(sender, e, (short)slider.Value, ref slider, ref sliderVal); };
-                slider.MouseUp += delegate (object sender, MouseEventArgs e) { slider_mouseup(sender, e, slider.mIndex, (short)slider.Value); };
-                slider.KeyPress += delegate (object sender, KeyPressEventArgs e) { slider_keypress(sender, e, slider.mIndex, (short)slider.Value); };
 
-
-                sliderPanel.Controls.Add(slider);
-                sliderPanel.Controls.Add(sliderVal);
-
-                controlPanel.Controls.Add(sliderPanel);
-
-                monitorControls.Controls.Add(controlPanel);
             }
 
-            ResumeLayout();
+            monitorTable.ResumeLayout();
         }
     }
 }
