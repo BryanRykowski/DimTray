@@ -187,7 +187,7 @@ namespace DimTray
                 bool result = false;
                 int error = 0;
 
-                while((i <= 10) && (Monitors.Count == 0))
+                while((i < 10) && (Monitors.Count == 0))
                 {
                     result = NativeMethods.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, CallBackInstance, 0x0);
                     error = Marshal.GetLastWin32Error();
@@ -196,8 +196,9 @@ namespace DimTray
                     {
                         Thread.Sleep(100);
                     }
+                    ++i;
                 }
-                    
+                
                 if (!result)
                 {
                     throw new Exception( String.Format("Call to EnumDisplayMonitors failed with code 0x{0}", error.ToString("X")));
@@ -227,7 +228,7 @@ namespace DimTray
             }
         }
 
-        public void EnumDisplayMonitorsCallback(
+        public bool EnumDisplayMonitorsCallback(
             IntPtr hMonitor,
             IntPtr hdc,
             IntPtr rect,
@@ -323,7 +324,9 @@ namespace DimTray
                 }
 
                 Monitors.Add(mon);
+
             }
+            return true;
         }
     }
 }

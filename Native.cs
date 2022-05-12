@@ -21,7 +21,7 @@ using System.Drawing;
 
 namespace DimTray
 {
-    public delegate void EnumMonitorsDelegate(
+    public delegate bool EnumMonitorsDelegate(
         IntPtr hMonitor,
         IntPtr hdc,
         IntPtr rect,
